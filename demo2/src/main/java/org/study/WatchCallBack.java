@@ -39,7 +39,11 @@ public class WatchCallBack implements Watcher, AsyncCallback.StatCallback, Async
             // 节点被删除怎么办？
             case NodeDeleted -> {
                 // TODO 容忍性
-                System.out.println("节点被删除，清空数据 TODO");
+                System.out.println("节点被删除，清空数据");
+                mc.setConf("");
+                // 重新设置cd，让任务阻塞
+                cd = new CountDownLatch(1);
+
             }
             // 节点数据变更怎么办？
             case NodeDataChanged -> {

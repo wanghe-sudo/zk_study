@@ -40,9 +40,18 @@ public class Tst {
         zk.exists("/AppConf", watchCallBack, watchCallBack, "ABC");
         watchCallBack.aWait();
         while (true) {
-            Thread.sleep(2000);
-            System.out.println("判断两个引用是否是一个：" + (watchCallBack.getMc() == mc));
-            System.out.println(watchCallBack.getMc().getConf());
+            if (mc.getConf().isBlank()) {
+                System.out.println("节点数据丢了！。。。。");
+                // 当节点数据被删除后，继续等待
+                // 触发stat的删除事件，删除事件中，设置cd为1
+                // 这里await的时候，一直阻塞，直到被重新设置了新值 cd-1，这里将不在阻塞
+                watchCallBack.aWait();
+            } else {
+                Thread.sleep(2000);
+                System.out.println(watchCallBack.getMc().getConf());
+
+            }
+
         }
     }
 }
